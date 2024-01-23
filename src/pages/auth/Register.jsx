@@ -125,7 +125,7 @@ const Register = () => {
         formState
       );
 
-      if (res && res.data.success) {
+      if (res || res.data.success) {
         dispatch(loginUser(res.data));
         toast.success(res.data && res.data.message);
         navigate("/login");

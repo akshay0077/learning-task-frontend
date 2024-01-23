@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import "./Auth.css";
-import { Link } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+
+import { Link,useNavigate } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../store/authSlice.jsx";
 
 const Login = () => {
   const dispatch = useDispatch();
+    const navigate = useNavigate();
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -49,6 +51,8 @@ const Login = () => {
       );
       dispatch(loginUser(response.data));
       console.log(response.data);
+      toast.success("Login Successfully");
+      navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
       toast("Login failed. Please check your credentials and try again.", {
@@ -101,7 +105,7 @@ const Login = () => {
         <Toaster />
         <br />
         <span className="">Don't have an account?</span>
-        <Link to="/">Signup</Link>
+        <Link to="/register">Signup</Link>
       </form>
     </div>
   );
