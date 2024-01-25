@@ -21,8 +21,6 @@ const UserList = () => {
             authorization : localStorage.getItem("token")
         }});
         setUser(response.data?.user);
-        console.log(response);
-        // toast.success("User Data Show Successfully");
       } catch (error) {
         toast.error("Error in Data fetching ", error);
       }
