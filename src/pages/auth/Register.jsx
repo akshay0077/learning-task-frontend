@@ -4,27 +4,27 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import "./Auth.css";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../../store/authSlice.jsx";
 
 const Register = () => {
-  const dispatch = useDispatch();
 
   const [formState, setFormState] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    conformPassword: "",
+    confirmPassword: "",
   });
 
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const validateFirstName = (firstName) => {
     return firstName.trim().length !== 0;
   };
 
   const validateEmail = (email) => {
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -76,11 +76,14 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const { password, conformPassword, firstName, email } = formState;
+  setIsSubmitting(true);
+    setDisabled(true);
+    const { password, confirmPassword, firstName, email } = formState;
 
     if (!validateFirstName(firstName)) {
       handleInvalidFirstName();
+      setIsSubmitting(false)
+      setDisabled(false)
       return;
     } else {
       setFormState((prevState) => ({
@@ -91,6 +94,8 @@ const Register = () => {
 
     if (!validateEmail(email)) {
       handleInvalidEmail();
+      setIsSubmitting(false);
+      setDisabled(false);
       return;
     } else {
       setFormState((prevState) => ({
@@ -99,8 +104,10 @@ const Register = () => {
       }));
     }
 
-    if (password !== conformPassword) {
+    if (password !== confirmPassword) {
       handlePasswordMismatch();
+      setIsSubmitting(false);
+      setDisabled(false);
       return;
     } else {
       setFormState((prevState) => ({
@@ -111,6 +118,8 @@ const Register = () => {
 
     if (!validatePassword(password)) {
       handleInvalidPassword();
+      setIsSubmitting(false);
+      setDisabled(false);
       return;
     } else {
       setFormState((prevState) => ({
@@ -126,7 +135,6 @@ const Register = () => {
       );
 
       if (res || res.data.success) {
-        dispatch(loginUser(res.data));
         toast.success(res.data && res.data.message);
         navigate("/login");
       } else {
@@ -210,8 +218,8 @@ const Register = () => {
           <div className="mb-3">
             <input
               type="password"
-              name="conformPassword"
-              value={formState.conformPassword}
+              name="confirmPassword"
+              value={formState.confirmPassword}
               onChange={handleChange}
               className="form-control"
               id="exampleInputEmail1"
@@ -223,8 +231,11 @@ const Register = () => {
             type="submit"
             className="btn btn-primary"
             onClick={handleSubmit}
+            disabled={isSubmitting || disabled}
           >
-            REGISTER
+             {!isSubmitting && !disabled && "REGISTER"}
+          {isSubmitting && disabled && "Submitting..."}
+           {!isSubmitting && disabled && "Signup-in"}
           </button>
           <Toaster />
           <br />

@@ -4,12 +4,11 @@ import "./Auth.css";
 import { Link,useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../../store/authSlice.jsx";
 
 const Login = () => {
-  const dispatch = useDispatch();
     const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -26,6 +25,8 @@ const Login = () => {
   };
 
   const validations = async () => {
+    setIsSubmitting(true);
+    setDisabled(true);
     const { email, password } = loginData;
 
     if (!validateEmail(email)) {
@@ -33,6 +34,8 @@ const Login = () => {
         duration: 2000,
         icon: "❌",
       });
+      setIsSubmitting(false)
+      setDisabled(false)
       return;
     }
 
@@ -41,6 +44,8 @@ const Login = () => {
         duration: 2000,
         icon: "❌",
       });
+      setIsSubmitting(false);
+      setDisabled(false);
       return;
     }
 
@@ -49,12 +54,18 @@ const Login = () => {
         `${process.env.REACT_APP_API}/api/v1/auth/login`,
         loginData
       );
-      dispatch(loginUser(response.data));
-      console.log(response.data);
+      localStorage.setItem('user', JSON.stringify(response.data.sendPayload));
+localStorage.setItem('token', response.data.token);
       toast.success("Login Successfully");
-      navigate("/");
+      setIsSubmitting(false);
+
+        setTimeout(() => {
+          
+          navigate("/");
+        }, 500);
+      
     } catch (error) {
-      console.error("Login failed:", error);
+      setIsSubmitting(false);
       toast("Login failed. Please check your credentials and try again.", {
         duration: 3000,
         icon: "❌",
@@ -99,8 +110,10 @@ const Login = () => {
             required
           />
         </div>
-        <button type="button" className="btn btn-primary" onClick={validations}>
-          LOGIN
+        <button type="button" className="btn btn-primary" onClick={validations} disabled={isSubmitting || disabled}>
+          {!isSubmitting && !disabled && "LOGIN"}
+          {isSubmitting && disabled && "Submitting..."}
+           {!isSubmitting && disabled && "logged-in"}
         </button>
         <Toaster />
         <br />
