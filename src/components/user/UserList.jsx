@@ -15,7 +15,6 @@ const UserList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(baseURL);
         const response = await axios.get(baseURL, {
           headers: {
             authorization : localStorage.getItem("token")
