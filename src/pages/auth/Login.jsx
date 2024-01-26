@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import "./Auth.css";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
+import "./Auth.css";
+
 const Login = () => {
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -20,6 +26,8 @@ const Login = () => {
   };
 
   const validations = async () => {
+    setIsSubmitting(true);
+    setDisabled(true);
     const { email, password } = loginData;
 
     if (!validateEmail(email)) {
@@ -27,6 +35,8 @@ const Login = () => {
         duration: 2000,
         icon: "❌",
       });
+      setIsSubmitting(false);
+      setDisabled(false);
       return;
     }
 
@@ -35,6 +45,8 @@ const Login = () => {
         duration: 2000,
         icon: "❌",
       });
+      setIsSubmitting(false);
+      setDisabled(false);
       return;
     }
 
@@ -43,7 +55,16 @@ const Login = () => {
         `${process.env.REACT_APP_API}/api/v1/auth/login`,
         loginData
       );
+      localStorage.setItem("user", JSON.stringify(response.data.sendPayload));
+      localStorage.setItem("token", response.data.token);
+      toast.success("Login Successfully");
+      setIsSubmitting(false);
+
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
     } catch (error) {
+      setIsSubmitting(false);
       toast("Login failed. Please check your credentials and try again.", {
         duration: 3000,
         icon: "❌",
@@ -88,13 +109,20 @@ const Login = () => {
             required
           />
         </div>
-        <button type="button" className="btn btn-primary" onClick={validations}>
-          LOGIN
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={validations}
+          disabled={isSubmitting || disabled}
+        >
+          {!isSubmitting && !disabled && "LOGIN"}
+          {isSubmitting && disabled && "Submitting..."}
+          {!isSubmitting && disabled && "logged-in"}
         </button>
         <Toaster />
         <br />
         <span className="">Don't have an account?</span>
-        <Link to="/">Signup</Link>
+        <Link to="/register">Signup</Link>
       </form>
     </div>
   );

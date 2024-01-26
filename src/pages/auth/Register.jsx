@@ -3,20 +3,16 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { useDispatch } from "react-redux";
 
-import { loginUser } from "../../store/authSlice.jsx";
 import "./Auth.css";
 
 const Register = () => {
-  const dispatch = useDispatch();
-
   const [formState, setFormState] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    conformPassword: "",
+    confirmPassword: "",
   });
 
   const navigate = useNavigate();
@@ -60,9 +56,9 @@ const Register = () => {
   const handlePasswordMismatch = () => {
     setFormState((prevState) => ({
       ...prevState,
-      confirmPasswordError: "Passwords do not match",
+      confirmPasswordError: "Password do not match",
     }));
-    displayErrorToast("Passwords do not match");
+    displayErrorToast("Password do not match");
   };
 
   const handleInvalidPassword = () => {
@@ -78,7 +74,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { password, conformPassword, firstName, email } = formState;
+    const { password, confirmPassword, firstName, email } = formState;
 
     if (!validateFirstName(firstName)) {
       handleInvalidFirstName();
@@ -100,7 +96,7 @@ const Register = () => {
       }));
     }
 
-    if (password !== conformPassword) {
+    if (password !== confirmPassword) {
       handlePasswordMismatch();
       return;
     } else {
@@ -125,10 +121,8 @@ const Register = () => {
         `${process.env.REACT_APP_API}/api/v1/auth/register`,
         formState
       );
-
-      if (res && res.data.success) {
-        dispatch(loginUser(res.data));
-        toast.success(res.data && res.data.message);
+      if (res || res.data.success) {
+        toast.success("Login Successfully");
         navigate("/login");
       } else {
         toast.error(res.data.message);
@@ -166,7 +160,6 @@ const Register = () => {
               value={formState.firstName}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputEmail1"
               placeholder="First Name"
               required
               autoFocus
@@ -179,7 +172,6 @@ const Register = () => {
               value={formState.lastName}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputEmail1"
               placeholder="Last Name"
               required
             />
@@ -191,7 +183,6 @@ const Register = () => {
               value={formState.email}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputPassword1"
               placeholder="example@gmail.com"
               required
             />
@@ -203,7 +194,6 @@ const Register = () => {
               value={formState.password}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputEmail1"
               placeholder="Password"
               required
             />
@@ -211,12 +201,11 @@ const Register = () => {
           <div className="mb-3">
             <input
               type="password"
-              name="conformPassword"
-              value={formState.conformPassword}
+              name="confirmPassword"
+              value={formState.confirmPassword}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputEmail1"
-              placeholder="Conform Password"
+              placeholder="Confirm Password"
               required
             />
           </div>
