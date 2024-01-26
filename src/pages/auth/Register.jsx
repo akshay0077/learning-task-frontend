@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import "./Auth.css";
-import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
 import { loginUser } from "../../store/authSlice.jsx";
+import "./Auth.css";
 
 const Register = () => {
   const dispatch = useDispatch();

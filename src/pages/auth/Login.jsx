@@ -3,12 +3,8 @@ import "./Auth.css";
 import { Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../../store/authSlice.jsx";
 
 const Login = () => {
-  const dispatch = useDispatch();
-
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -47,10 +43,7 @@ const Login = () => {
         `${process.env.REACT_APP_API}/api/v1/auth/login`,
         loginData
       );
-      dispatch(loginUser(response.data));
-      console.log(response.data);
     } catch (error) {
-      console.error("Login failed:", error);
       toast("Login failed. Please check your credentials and try again.", {
         duration: 3000,
         icon: "❌",
