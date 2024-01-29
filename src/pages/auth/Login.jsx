@@ -36,43 +36,36 @@ const Login = () => {
         duration: 2000,
         icon: "❌",
       });
-      setIsSubmitting(false);
-      setDisabled(false);
-      return;
-    }
-
-    if (!validatePassword(password)) {
+    } else if (!validatePassword(password)) {
       toast("Password is required", {
         duration: 2000,
         icon: "❌",
       });
-      setIsSubmitting(false);
-      setDisabled(false);
-      return;
+    } else {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API}/api/v1/auth/login`,
+          loginData
+        );
+
+        localStorage.setItem("user", JSON.stringify(response.data.sendPayload));
+        localStorage.setItem("token", response.data.token);
+
+        toast.success("Login Successfully");
+
+        setTimeout(() => {
+          navigate("/");
+        }, 500);
+      } catch (error) {
+        toast("Login failed. Please check your credentials and try again.", {
+          duration: 3000,
+          icon: "❌",
+        });
+      }
     }
 
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/auth/login`,
-        loginData
-      );
-
-      localStorage.setItem("user", JSON.stringify(response.data.sendPayload));
-      localStorage.setItem("token", response.data.token);
-
-      toast.success("Login Successfully");
-      setIsSubmitting(false);
-
-      setTimeout(() => {
-        navigate("/");
-      }, 500);
-    } catch (error) {
-      setIsSubmitting(false);
-      toast("Login failed. Please check your credentials and try again.", {
-        duration: 3000,
-        icon: "❌",
-      });
-    }
+    setIsSubmitting(false);
+    setDisabled(false);
   };
 
   const handleChange = (e) => {
@@ -118,9 +111,18 @@ const Login = () => {
           onClick={validations}
           disabled={isSubmitting || disabled}
         >
-          {!isSubmitting && !disabled && "LOGIN"}
-          {isSubmitting && disabled && "Submitting..."}
-          {!isSubmitting && disabled && "logged-in"}
+          {isSubmitting ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              <span className="visually-hidden">Submitting...</span>
+            </>
+          ) : (
+            "LOGIN"
+          )}
         </button>
         <Toaster />
         <br />
