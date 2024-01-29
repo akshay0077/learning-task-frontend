@@ -28,6 +28,7 @@ const Login = () => {
   const validations = async () => {
     setIsSubmitting(true);
     setDisabled(true);
+
     const { email, password } = loginData;
 
     if (!validateEmail(email)) {
@@ -55,8 +56,10 @@ const Login = () => {
         `${process.env.REACT_APP_API}/api/v1/auth/login`,
         loginData
       );
+
       localStorage.setItem("user", JSON.stringify(response.data.sendPayload));
       localStorage.setItem("token", response.data.token);
+
       toast.success("Login Successfully");
       setIsSubmitting(false);
 
