@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
@@ -16,6 +15,19 @@ const Register = () => {
   });
 
   const navigate = useNavigate();
+
+  const validateAndSetError = (value, validationFunction, errorSetter) => {
+    if (!validationFunction(value)) {
+      errorSetter();
+      return false;
+    } else {
+      setFormState((prevState) => ({
+        ...prevState,
+        [errorSetter.name]: "",
+      }));
+      return true;
+    }
+  };
 
   const validateFirstName = (firstName) => {
     return firstName.trim().length !== 0;
@@ -76,24 +88,14 @@ const Register = () => {
 
     const { password, confirmPassword, firstName, email } = formState;
 
-    if (!validateFirstName(firstName)) {
-      handleInvalidFirstName();
+    if (
+      !validateAndSetError(firstName, validateFirstName, handleInvalidFirstName)
+    ) {
       return;
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-        firstNameError: "",
-      }));
     }
 
-    if (!validateEmail(email)) {
-      handleInvalidEmail();
+    if (!validateAndSetError(email, validateEmail, handleInvalidEmail)) {
       return;
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-        emailError: "",
-      }));
     }
 
     if (password !== confirmPassword) {
@@ -106,14 +108,10 @@ const Register = () => {
       }));
     }
 
-    if (!validatePassword(password)) {
-      handleInvalidPassword();
+    if (
+      !validateAndSetError(password, validatePassword, handleInvalidPassword)
+    ) {
       return;
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-        passwordError: "",
-      }));
     }
 
     try {
@@ -121,11 +119,14 @@ const Register = () => {
         `${process.env.REACT_APP_API}/api/v1/auth/register`,
         formState
       );
-      if (res || res.data.success) {
-        toast.success("Login Successfully");
+
+      if (res && res.data && res.data.message) {
+        toast.success("Registration successful. Please log in.");
         navigate("/login");
       } else {
-        toast.error(res.data.message);
+        toast.error(
+          res?.data?.message || "Registration failed. Please try again."
+        );
       }
     } catch (error) {
       toast.error("Something went wrong");
@@ -218,7 +219,7 @@ const Register = () => {
           </button>
           <Toaster />
           <br />
-          <span className="">Already have account?</span>
+          <span className="">Already have an account?</span>
           <Link to="/login">Login</Link>
         </form>
       </div>
