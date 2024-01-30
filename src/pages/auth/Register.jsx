@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+
 import "./Auth.css";
-import { Link } from "react-router-dom";
 
 const Register = () => {
-
   const [formState, setFormState] = useState({
     firstName: "",
     lastName: "",
@@ -19,12 +18,24 @@ const Register = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
+  const validateAndSetError = (value, validationFunction, errorSetter) => {
+    if (!validationFunction(value)) {
+      errorSetter();
+      return false;
+    } else {
+      setFormState((prevState) => ({
+        ...prevState,
+        [errorSetter.name]: "",
+      }));
+      return true;
+    }
+  };
+
   const validateFirstName = (firstName) => {
     return firstName.trim().length !== 0;
   };
 
   const validateEmail = (email) => {
-    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -59,9 +70,9 @@ const Register = () => {
   const handlePasswordMismatch = () => {
     setFormState((prevState) => ({
       ...prevState,
-      confirmPasswordError: "Passwords do not match",
+      confirmPasswordError: "Password do not match",
     }));
-    displayErrorToast("Passwords do not match");
+    displayErrorToast("Password do not match");
   };
 
   const handleInvalidPassword = () => {
@@ -76,32 +87,17 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  setIsSubmitting(true);
-    setDisabled(true);
+
     const { password, confirmPassword, firstName, email } = formState;
 
-    if (!validateFirstName(firstName)) {
-      handleInvalidFirstName();
-      setIsSubmitting(false)
-      setDisabled(false)
+    if (
+      !validateAndSetError(firstName, validateFirstName, handleInvalidFirstName)
+    ) {
       return;
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-        firstNameError: "",
-      }));
     }
 
-    if (!validateEmail(email)) {
-      handleInvalidEmail();
-      setIsSubmitting(false);
-      setDisabled(false);
+    if (!validateAndSetError(email, validateEmail, handleInvalidEmail)) {
       return;
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-        emailError: "",
-      }));
     }
 
     if (password !== confirmPassword) {
@@ -116,16 +112,10 @@ const Register = () => {
       }));
     }
 
-    if (!validatePassword(password)) {
-      handleInvalidPassword();
-      setIsSubmitting(false);
-      setDisabled(false);
+    if (
+      !validateAndSetError(password, validatePassword, handleInvalidPassword)
+    ) {
       return;
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-        passwordError: "",
-      }));
     }
 
     try {
@@ -134,11 +124,13 @@ const Register = () => {
         formState
       );
 
-      if (res || res.data.success) {
-        toast.success(res.data && res.data.message);
+      if (res && res.data && res.data.message) {
+        toast.success("Registration successful. Please log in.");
         navigate("/login");
       } else {
-        toast.error(res.data.message);
+        toast.error(
+          res?.data?.message || "Registration failed. Please try again."
+        );
       }
     } catch (error) {
       toast.error("Something went wrong");
@@ -173,7 +165,6 @@ const Register = () => {
               value={formState.firstName}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputEmail1"
               placeholder="First Name"
               required
               autoFocus
@@ -186,7 +177,6 @@ const Register = () => {
               value={formState.lastName}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputEmail1"
               placeholder="Last Name"
               required
             />
@@ -198,7 +188,6 @@ const Register = () => {
               value={formState.email}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputPassword1"
               placeholder="example@gmail.com"
               required
             />
@@ -210,7 +199,6 @@ const Register = () => {
               value={formState.password}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputEmail1"
               placeholder="Password"
               required
             />
@@ -222,8 +210,7 @@ const Register = () => {
               value={formState.confirmPassword}
               onChange={handleChange}
               className="form-control"
-              id="exampleInputEmail1"
-              placeholder="Conform Password"
+              placeholder="Confirm Password"
               required
             />
           </div>
@@ -233,13 +220,13 @@ const Register = () => {
             onClick={handleSubmit}
             disabled={isSubmitting || disabled}
           >
-             {!isSubmitting && !disabled && "REGISTER"}
-          {isSubmitting && disabled && "Submitting..."}
-           {!isSubmitting && disabled && "Signup-in"}
+            {!isSubmitting && !disabled && "REGISTER"}
+            {isSubmitting && disabled && "Submitting..."}
+            {!isSubmitting && disabled && "Signup-in"}
           </button>
           <Toaster />
           <br />
-          <span className="">Already have account?</span>
+          <span className="">Already have an account?</span>
           <Link to="/login">Login</Link>
         </form>
       </div>

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+
 import Home from "../Home";
+import "./UserList.css";
 
 const baseURL = `${process.env.REACT_APP_API}/api/v1/userlist/userdata`;
 
@@ -26,19 +28,23 @@ const UserList = () => {
     fetchData();
   }, []);
 
-  const indexOfLastUser = currentPage * usersPerPage; // current(1) * userperPage(3) = 3
-  const indexOfFirstUser = indexOfLastUser - usersPerPage; // 3 - 3 = 0
-  const currentUsers = user.slice(indexOfFirstUser, indexOfLastUser); // (0,3)
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = user.slice(indexOfFirstUser, indexOfLastUser);
+
+  const loggedInUserId = JSON.parse(localStorage.getItem("user"));
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const filteredUsers = currentUsers.filter(
+    (item) => item.id !== loggedInUserId.id
+  );
 
   return (
     <>
       <Home />
-      <br />
-      <br />
-      <br />
-      <div>
+
+      <div className="listdata">
         <h2>User List</h2>
         <table className="table">
           <thead>
@@ -52,14 +58,14 @@ const UserList = () => {
             </tr>
           </thead>
           <tbody>
-            {currentUsers.map((item) => (
+            {filteredUsers.map((item) => (
               <tr key={item.id}>
                 <td>{item.id}</td>
                 <td>{item.firstname}</td>
                 <td>{item.lastname}</td>
                 <td>{item.email}</td>
                 <td>
-                  <span class="material-icons-outlined">edit</span>{" "}
+                  <span class="material-icons">edit</span>{" "}
                 </td>
                 <td>
                   <span class="material-icons">delete</span>{" "}
