@@ -51,11 +51,7 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(response.data.sendPayload));
         localStorage.setItem("token", response.data.token);
 
-        toast.success("Login Successfully");
-
-        setTimeout(() => {
-          navigate("/");
-        }, 500);
+        navigate("/");
       } catch (error) {
         toast("Login failed. Please check your credentials and try again.", {
           duration: 3000,
