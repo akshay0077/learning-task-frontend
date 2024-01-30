@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import "material-icons/iconfont/material-icons.css";
 import Home from "../Home";
 
-// const baseURL = "https://jsonplaceholder.typicode.com/users";
 const baseURL = `${process.env.REACT_APP_API}/api/v1/userlist/userdata`;
 
 const UserList = () => {
@@ -17,14 +15,15 @@ const UserList = () => {
       try {
         const response = await axios.get(baseURL, {
           headers: {
-            authorization : localStorage.getItem("token")
-        }});
+            authorization: localStorage.getItem("token"),
+          },
+        });
         setUser(response.data?.user);
       } catch (error) {
         toast.error("Error in Data fetching ", error);
       }
     };
-fetchData()
+    fetchData();
   }, []);
 
   const indexOfLastUser = currentPage * usersPerPage; // current(1) * userperPage(3) = 3

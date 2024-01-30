@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, Link, Navigate } from "react-router-dom";
 
 const Home = () => {
-    const userJSON = localStorage.getItem('user');
+  const userJSON = localStorage.getItem("user");
   const user = userJSON ? JSON.parse(userJSON) : null;
 
   return (
@@ -25,73 +25,51 @@ const Home = () => {
               TH Learning Task
             </Link>
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-              {/* <li className="nav-item">
-                <NavLink to="/" className="nav-link ">
-                  Home
-                </NavLink>
-              </li>
-              <li className="nav-item dropdown">
-                <Link className="nav-link " to={"/users"}>
-                  User
-                </Link>
-              </li>
-              <li className="nav-item">
-                <span className="nav-link">{user.firstName}</span>
-              </li>
-              
-              <li className="nav-item">
-                <NavLink to="/register" className="nav-link">
-                  Register
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink to="/login" className="nav-link">
-                  Login
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink to="/login" className="nav-link" >
-                  Logout
-                </NavLink>
-              </li> */}
               <li className="nav-item">
                 <NavLink to="/" className="nav-link ">
                   Home
                 </NavLink>
               </li>
-              {user?<li className="nav-item dropdown">
-                <Link className="nav-link " to={"/users"}>
-                  User
-                </Link>
-              </li> : <Navigate to={"/login"}/>}
               {user ? (
-              <>
-                <li className="nav-item">
-                  <span className="nav-link">{user.firstname}</span>
-                </li>
-                <li className="nav-item">
-                    <Link to="/login" className="nav-link" onClick={() => {
-                      localStorage.removeItem('user');
-                  }}>
-                    Logout
+                <li className="nav-item dropdown">
+                  <Link className="nav-link " to={"/users"}>
+                    User
                   </Link>
                 </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <NavLink to="/register" className="nav-link">
-                    Register
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink to="/login" className="nav-link">
-                    Login
-                  </NavLink>
-                </li>
-              </>
-            )}
-              
+              ) : (
+                <Navigate to={"/login"} />
+              )}
+              {user ? (
+                <>
+                  <li className="nav-item">
+                    <span className="nav-link">{user.firstname}</span>
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      to="/login"
+                      className="nav-link"
+                      onClick={() => {
+                        localStorage.removeItem("user");
+                      }}
+                    >
+                      Logout
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <NavLink to="/register" className="nav-link">
+                      Register
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink to="/login" className="nav-link">
+                      Login
+                    </NavLink>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>
