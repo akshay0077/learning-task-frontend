@@ -6,6 +6,7 @@ import Register from "./pages/auth/Register";
 
 import Home from "./components/Home";
 import UserList from "./components/user/UserList";
+import ProtectedRoute from "./components/Routes/ProtectedRoute.js";
 
 const App = () => {
   return (

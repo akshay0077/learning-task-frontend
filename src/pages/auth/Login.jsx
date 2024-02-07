@@ -3,17 +3,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-<<<<<<< Updated upstream
 
 import "./Auth.css";
 
 const Login = () => {
   const navigate = useNavigate();
-=======
-
-const Login = () => {
-    const navigate = useNavigate();
->>>>>>> Stashed changes
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
@@ -41,21 +35,11 @@ const Login = () => {
         duration: 2000,
         icon: "❌",
       });
-<<<<<<< Updated upstream
     } else if (!validatePassword(password)) {
-=======
-      setIsSubmitting(false)
-      setDisabled(false)
-      return;
-    }
-
-    if (!validatePassword(password)) {
->>>>>>> Stashed changes
       toast("Password is required", {
         duration: 2000,
         icon: "❌",
       });
-<<<<<<< Updated upstream
     } else {
       try {
         const response = await axios.post(
@@ -74,34 +58,6 @@ const Login = () => {
           icon: "❌",
         });
       }
-=======
-      setIsSubmitting(false);
-      setDisabled(false);
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/auth/login`,
-        loginData
-      );
-      localStorage.setItem('user', JSON.stringify(response.data.sendPayload));
-localStorage.setItem('token', response.data.token);
-      toast.success("Login Successfully");
-      setIsSubmitting(false);
-
-        setTimeout(() => {
-          
-          navigate("/");
-        }, 500);
-      
-    } catch (error) {
-      setIsSubmitting(false);
-      toast("Login failed. Please check your credentials and try again.", {
-        duration: 3000,
-        icon: "❌",
-      });
->>>>>>> Stashed changes
     }
 
     setIsSubmitting(false);
@@ -145,7 +101,6 @@ localStorage.setItem('token', response.data.token);
             required
           />
         </div>
-<<<<<<< Updated upstream
         <button
           type="button"
           className="btn btn-primary"
@@ -164,12 +119,6 @@ localStorage.setItem('token', response.data.token);
           ) : (
             "LOGIN"
           )}
-=======
-        <button type="button" className="btn btn-primary" onClick={validations} disabled={isSubmitting || disabled}>
-          {!isSubmitting && !disabled && "LOGIN"}
-          {isSubmitting && disabled && "Submitting..."}
-           {!isSubmitting && disabled && "logged-in"}
->>>>>>> Stashed changes
         </button>
         <Toaster />
         <br />
