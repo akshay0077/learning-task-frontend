@@ -4,8 +4,15 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 import "./Auth.css";
+<<<<<<< Updated upstream
 
 const Register = () => {
+=======
+import { Link } from "react-router-dom";
+
+const Register = () => {
+
+>>>>>>> Stashed changes
   const [formState, setFormState] = useState({
     firstName: "",
     lastName: "",
@@ -17,6 +24,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disabled, setDisabled] = useState(false);
+<<<<<<< Updated upstream
 
   const validateAndSetError = (value, validationFunction, errorSetter) => {
     if (!validationFunction(value)) {
@@ -30,12 +38,15 @@ const Register = () => {
       return true;
     }
   };
+=======
+>>>>>>> Stashed changes
 
   const validateFirstName = (firstName) => {
     return firstName.trim().length !== 0;
   };
 
   const validateEmail = (email) => {
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -87,16 +98,34 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+<<<<<<< Updated upstream
 
     const { password, confirmPassword, firstName, email } = formState;
 
     if (
       !validateAndSetError(firstName, validateFirstName, handleInvalidFirstName)
     ) {
+=======
+  setIsSubmitting(true);
+    setDisabled(true);
+    const { password, confirmPassword, firstName, email } = formState;
+
+    if (!validateFirstName(firstName)) {
+      handleInvalidFirstName();
+      setIsSubmitting(false)
+      setDisabled(false)
+>>>>>>> Stashed changes
       return;
     }
 
+<<<<<<< Updated upstream
     if (!validateAndSetError(email, validateEmail, handleInvalidEmail)) {
+=======
+    if (!validateEmail(email)) {
+      handleInvalidEmail();
+      setIsSubmitting(false);
+      setDisabled(false);
+>>>>>>> Stashed changes
       return;
     }
 
@@ -112,9 +141,16 @@ const Register = () => {
       }));
     }
 
+<<<<<<< Updated upstream
     if (
       !validateAndSetError(password, validatePassword, handleInvalidPassword)
     ) {
+=======
+    if (!validatePassword(password)) {
+      handleInvalidPassword();
+      setIsSubmitting(false);
+      setDisabled(false);
+>>>>>>> Stashed changes
       return;
     }
 
@@ -124,8 +160,13 @@ const Register = () => {
         formState
       );
 
+<<<<<<< Updated upstream
       if (res && res.data && res.data.message) {
         toast.success("Registration successful. Please log in.");
+=======
+      if (res || res.data.success) {
+        toast.success(res.data && res.data.message);
+>>>>>>> Stashed changes
         navigate("/login");
       } else {
         toast.error(
@@ -220,9 +261,15 @@ const Register = () => {
             onClick={handleSubmit}
             disabled={isSubmitting || disabled}
           >
+<<<<<<< Updated upstream
             {!isSubmitting && !disabled && "REGISTER"}
             {isSubmitting && disabled && "Submitting..."}
             {!isSubmitting && disabled && "Signup-in"}
+=======
+             {!isSubmitting && !disabled && "REGISTER"}
+          {isSubmitting && disabled && "Submitting..."}
+           {!isSubmitting && disabled && "Signup-in"}
+>>>>>>> Stashed changes
           </button>
           <Toaster />
           <br />
