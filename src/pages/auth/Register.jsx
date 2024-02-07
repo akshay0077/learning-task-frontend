@@ -15,6 +15,8 @@ const Register = () => {
   });
 
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const validateAndSetError = (value, validationFunction, errorSetter) => {
     if (!validationFunction(value)) {
@@ -100,6 +102,8 @@ const Register = () => {
 
     if (password !== confirmPassword) {
       handlePasswordMismatch();
+      setIsSubmitting(false);
+      setDisabled(false);
       return;
     } else {
       setFormState((prevState) => ({
@@ -214,8 +218,11 @@ const Register = () => {
             type="submit"
             className="btn btn-primary"
             onClick={handleSubmit}
+            disabled={isSubmitting || disabled}
           >
-            REGISTER
+            {!isSubmitting && !disabled && "REGISTER"}
+            {isSubmitting && disabled && "Submitting..."}
+            {!isSubmitting && disabled && "Signup-in"}
           </button>
           <Toaster />
           <br />
